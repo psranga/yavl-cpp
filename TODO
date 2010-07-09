@@ -1,0 +1,27 @@
+Simplify specification
+======================
+
+map:
+  HEADER:
+    map:
+      name: [string: ]
+      version: [string: ]
+      sizeKB: [uint: ]
+
+The format now is very explicit. I am specifying explicitly
+that I expect a map (first line) and then explicitly listing
+out the keys.
+
+But by merely listing out the keys, am I not indicating that
+I expect a list? I can use this idea to condense the above
+tree specification to the one below:
+
+HEADER:
+  name: [string: ]
+  version: [string: ]
+  sizeKB: [uint: ]
+
+Add richer set of checks
+========================
+
+Check for signed int, int within ranges etc.
