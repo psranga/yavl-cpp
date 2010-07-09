@@ -1,0 +1,61 @@
+YAVL-CPP is a C++ library to help validate YAML files
+against a user-provided specification.
+
+The specification file is also written in YAML.
+
+I hesitate to say that this tool checks an input
+YAML against a "grammar". I do not think the specification
+format I've defined is general enough to be called a
+"grammar".
+
+Note: this is not check if the input file is a valid
+YAML; any YAML parser will do that. This library can be
+used to check if the input YAML has the structure
+(i.e., structure, keys, values, types) that your
+application expects. See example below.
+
+The idea is that generation of error messages about
+what is wrong with a YAML file can be automated through
+this library, so that your processing functions can be
+written assuming that the tree generated from the YAML
+file conforms to your code's assumptions.
+
+Example specification
+=====================
+
+map:
+  HEADER:
+    map:
+      name: [string: ]
+      version: [string: ]
+      sizeKB: [uint: ]
+
+Valid YAML
+==========
+
+HEADER:
+  name: myname
+  version: 1.02
+  sizeKB: 100
+
+Invalid YAML
+============
+
+HEADER:
+  name: myname
+  version: 1.02
+  sizeKB: 100 KB
+  # bug: KB should be absent
+
+With the invalid YAML, you'll get an error that "100
+KB" couldn't be converted to an int.
+
+PREREQUISITES
+=============
+
+Yavl-cpp uses the excellent yaml-cpp library. Go check
+out yaml-cpp just for the heck of it. It's one of the
+best designed libraries out there. Simple, and to the
+point implementation and documentaion.
+
+eof
