@@ -1,3 +1,5 @@
+==Summary==
+
 YAVL-CPP is a C++ library to help validate YAML files
 against a user-provided specification.
 
@@ -8,7 +10,7 @@ YAML against a "grammar". I do not think the specification
 format I've defined is general enough to be called a
 "grammar".
 
-Note: this is not check if the input file is a valid
+Note: this is not a tool to check if the input file is a valid
 YAML; any YAML parser will do that. This library can be
 used to check if the input YAML has the structure
 (i.e., structure, keys, values, types) that your
@@ -20,42 +22,82 @@ this library, so that your processing functions can be
 written assuming that the tree generated from the YAML
 file conforms to your code's assumptions.
 
-Example specification
-=====================
+Structures such as lists of lists, maps of lists,
+lists etc can be nicely checked. :)
 
+==Example specification==
+
+{{{
 map:
   HEADER:
     map:
       name: [string: ]
       version: [string: ]
-      sizeKB: [uint: ]
+      size: [enum: [big, small]]
+      pieces:
+        map:
+          a:
+            list: [string: ]
+          b:
+            list: [uint64: ]
+}}}
 
-Valid YAML
-==========
+Notice that HEADER.pieces.a is list nested within
+the map HEADER.pieces. You can have arbitrary levels
+of nesting, and also do things like maps within lists.
 
+==Valid YAML==
+
+{{{
 HEADER:
   name: myname
   version: 1.02
-  sizeKB: 100
+  size: big
+  pieces:
+    a: [hello, world]
+    b: [100, 200]
+}}}
 
-Invalid YAML
-============
+==Invalid YAML==
 
+{{{
 HEADER:
   name: myname
   version: 1.02
-  sizeKB: 100 KB
-  # bug: KB should be absent
+  size: xbig
+  pieces:
+    a: [hello, world]
+    b: [x100, 200]
+}}}
 
-With the invalid YAML, you'll get an error that "100
-KB" couldn't be converted to an int.
+With the invalid YAML, you'll get an errors that 'xbig'
+is not allowed and that 'x100' could not be converted to
+a 'long long'.
 
-PREREQUISITES
-=============
+==Dependencies==
 
 Yavl-cpp uses the excellent yaml-cpp library. Go check
 out yaml-cpp just for the heck of it. It's one of the
-best designed libraries out there. Simple, and to the
+best designed libraries out there (IMHO). Simple, and to the
 point implementation and documentaion.
+
+==Compilation==
+
+Nothing fancy. Just compile in yavl.cpp and all the cpp files of
+yaml-cpp with your program. I believe that libraries should pollute
+your build process as little as possible (thankfully, so does
+yaml-cpp).
+
+Here is how you would compile the example checker program,
+example-code/checker.cpp. YAML_CPP_DIR is where you
+untarred the yaml-cpp source and YAVL_CPP_DIR is where
+you untarred the yavl-cpp source.
+
+{{{
+g++ -I$YAML_CPP_DIR/include -I$YAVL_CPP_DIR/src \
+  $YAML_CPP_DIR/src/*.cpp \
+  $YAVL_CPP_DIR/src/yavl.cpp \
+  $YAVL_CPP_DIR/example-code/checker.cpp -o checker
+}}}
 
 eof
