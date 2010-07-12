@@ -25,3 +25,11 @@ Add richer set of checks
 ========================
 
 Check for signed int, int within ranges etc.
+
+Add examples for nested structures
+==================================
+
+lists withing maps, maps within lists etc.
+
+eof
+
