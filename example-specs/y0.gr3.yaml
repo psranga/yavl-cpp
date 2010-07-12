@@ -1,0 +1,8 @@
+# to be checked against gr3.yaml
+HEADER:
+  name: myname
+  version: 1.02
+  size: xbig
+  pieces:
+    a: [hello, world]
+    b: [x100, 200]

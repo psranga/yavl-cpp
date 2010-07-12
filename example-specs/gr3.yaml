@@ -1,0 +1,13 @@
+# spec to check y0.gr3.yaml
+map:
+  HEADER:
+    map:
+      name: [string: ]
+      version: [string: ]
+      size: [enum: [big, small]]
+      pieces:
+        map:
+          a:
+            list: [string: ]
+          b:
+            list: [uint64: ]
