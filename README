@@ -10,10 +10,12 @@ YAML against a "grammar". I do not think the specification
 format I've defined is general enough to be called a
 "grammar".
 
+Maybe I should call it a "tree specification" (treespec).
+
 Note: this is not a tool to check if the input file is a valid
 YAML; any YAML parser will do that. This library can be
-used to check if the input YAML has the structure
-(i.e., structure, keys, values, types) that your
+used to check if the input YAML has the tree structure
+(i.e., keys, values, types, nesting of keys) that your
 application expects. See example below.
 
 The idea is that generation of error messages about
@@ -25,7 +27,7 @@ file conforms to your code's assumptions.
 Structures such as lists of lists, maps of lists,
 lists etc can be nicely checked. :)
 
-==Example specification==
+==Example Tree Specification==
 
 {{{
 map:
@@ -45,6 +47,9 @@ map:
 Notice that HEADER.pieces.a is list nested within
 the map HEADER.pieces. You can have arbitrary levels
 of nesting, and also do things like maps within lists.
+
+Note: one of the items in the [http://code.google.com/p/yavl-cpp/source/browse/trunk/TODO TODO] is to simplify this
+syntax.
 
 ==Valid YAML==
 
@@ -76,7 +81,7 @@ a 'long long'.
 
 ==Dependencies==
 
-Yavl-cpp uses the excellent yaml-cpp library. Go check
+Yavl-cpp uses the excellent [http://code.google.com/p/yaml-cpp/ yaml-cpp] library. Go check
 out yaml-cpp just for the heck of it. It's one of the
 best designed libraries out there (IMHO). Simple, and to the
 point implementation and documentaion.
