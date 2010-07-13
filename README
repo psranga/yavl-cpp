@@ -105,4 +105,21 @@ g++ -I$YAML_CPP_DIR/include -I$YAVL_CPP_DIR/src \
   $YAVL_CPP_DIR/example-code/checker.cpp -o checker
 }}}
 
+==Developer Notes==
+
+What I found interesting about this exercise was how short I was
+able to make the checker program by a judicious selection of:
+
+  * problem space restriction
+  * treespec language is itself YAML
+  
+Problem space restriction gave the most bang. Instead of
+solving a very general problem, I chose to solve a certain
+subset of the problem. I think it's quite a large subset,
+so hopefully many people will find this library useful.
+
+By using YAML to encode the treespec, I saved myself the
+hassle of writing a parser, and the user of the library
+the hassle of learning yet another DSL.
+
 eof
