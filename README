@@ -105,6 +105,12 @@ g++ -I$YAML_CPP_DIR/include -I$YAVL_CPP_DIR/src \
   $YAVL_CPP_DIR/example-code/checker.cpp -o checker
 }}}
 
+And run it like this:
+
+{{{
+checker $YAVL_CPP_DIR/example-specs/gr3.yaml $YAVL_CPP_DIR/example-specs/y0.gr3.yaml
+}}}
+
 ==Developer Notes==
 
 What I found interesting about this exercise was how short I was
