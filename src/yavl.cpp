@@ -18,6 +18,25 @@ namespace YAVL {
   {
     return "string";
   }
+
+  template <>
+  std::string ctype2str<long long>()
+  {
+    return "long long";
+  }
+
+  template <>
+  std::string ctype2str<unsigned int>()
+  {
+    return "unsigned int";
+  }
+
+  template <>
+  std::string ctype2str<int>()
+  {
+    return "int";
+  }
+
 }
 
 ostream& operator << (ostream& os, const Path& path)
@@ -129,6 +148,12 @@ bool Validator::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
     attempt_to_convert<string>(doc, ok);
   } else if (type == "uint64") {
     attempt_to_convert<unsigned long long>(doc, ok);
+  } else if (type == "int64") {
+    attempt_to_convert<long long>(doc, ok);
+  } else if (type == "int") {
+    attempt_to_convert<int>(doc, ok);
+  } else if (type == "uint") {
+    attempt_to_convert<unsigned int>(doc, ok);
   } else if (type == "enum") {
     ok = false;
     string docValue = doc;
@@ -139,7 +164,7 @@ bool Validator::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
       }
     }
     if (!ok) {
-      string reason = "enum string " + docValue + " is not allowed.";
+      string reason = "enum string '" + docValue + "' is not allowed.";
       gen_error(Exception(reason, gr_path, doc_path));
     }
   }

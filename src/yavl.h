@@ -57,7 +57,8 @@ namespace YAVL
         scalar_node >> tmp;
         ok = true;
       } catch (const YAML::InvalidScalar& e) {
-        std::string reason = "unable to convert to " + YAVL::ctype2str<T>();
+        std::string s = scalar_node;
+        std::string reason = "unable to convert '" + s + "' to '" + YAVL::ctype2str<T>() + "'.";
         gen_error(Exception(reason, gr_path, doc_path));
         ok = false;
       }
