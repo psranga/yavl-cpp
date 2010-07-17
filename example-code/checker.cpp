@@ -4,7 +4,6 @@
 #include "yavl.h"
 
 using namespace std;
-using namespace YAVL;
 
 int main(int argc, char **argv)
 {
@@ -32,7 +31,7 @@ int main(int argc, char **argv)
     return 2;
   }
 
-  Validator yavl(gr, doc);
+  YAVL::Validator yavl(gr, doc);
   bool ok = yavl.validate();
   if (!ok) {
     cout << "ERRORS FOUND: " << endl << endl;
