@@ -4,6 +4,21 @@
 #include "yavl.h"
 
 using namespace std;
+using namespace YAVL;
+
+namespace YAVL {
+  template <>
+  std::string ctype2str<unsigned long long>()
+  {
+    return "unsigned long long";
+  }
+
+  template <>
+  std::string ctype2str<string>()
+  {
+    return "string";
+  }
+}
 
 ostream& operator << (ostream& os, const Path& path)
 {
@@ -17,7 +32,7 @@ ostream& operator << (ostream& os, const Path& path)
   return os;
 }
 
-ostream& operator << (ostream& os, const YAVL_Exception& v)
+ostream& operator << (ostream& os, const Exception& v)
 {
   os << "REASON: " << v.why << endl;
   os << "  doc path: " << v.doc_path << endl;
@@ -34,7 +49,7 @@ ostream& operator << (ostream& os, const Errors& v)
   return os;
 }
 
-const string& YAVL::type2str(YAML::CONTENT_TYPE t)
+const string& Validator::type2str(YAML::CONTENT_TYPE t)
 {
   static string nonestr = "none";
   static string scalarstr = "scalar";
@@ -57,7 +72,7 @@ const string& YAVL::type2str(YAML::CONTENT_TYPE t)
   return nonestr;
 }
 
-int YAVL::num_keys(const YAML::Node& doc)
+int Validator::num_keys(const YAML::Node& doc)
 {
   if (doc.GetType() != YAML::CT_MAP) {
     return 0;
@@ -69,11 +84,11 @@ int YAVL::num_keys(const YAML::Node& doc)
   return num;
 }
 
-bool YAVL::validate_map(const YAML::Node &mapNode, const YAML::Node &doc)
+bool Validator::validate_map(const YAML::Node &mapNode, const YAML::Node &doc)
 {
   if (doc.GetType() != YAML::CT_MAP) {
     string reason = "expected map, but found " + type2str(doc.GetType());
-    gen_error(YAVL_Exception(reason, gr_path, doc_path));
+    gen_error(Exception(reason, gr_path, doc_path));
     return false;
   }
 
@@ -84,7 +99,7 @@ bool YAVL::validate_map(const YAML::Node &mapNode, const YAML::Node &doc)
     const YAML::Node *docMapNode = 0;
     if (!(docMapNode = doc.FindValue(key))) {
       string reason = "key: " + key + " not found.";
-      gen_error(YAVL_Exception(reason, gr_path, doc_path));
+      gen_error(Exception(reason, gr_path, doc_path));
       ok = false;
     } else {
       doc_path.push_back(key);
@@ -99,7 +114,7 @@ bool YAVL::validate_map(const YAML::Node &mapNode, const YAML::Node &doc)
   return ok;
 }
 
-bool YAVL::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
+bool Validator::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
 {
   assert( gr.GetType() == YAML::CT_SEQUENCE );
 
@@ -111,25 +126,9 @@ bool YAVL::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
 
   bool ok = true;
   if (type == "string") {
-    try {
-      string tmp = doc;
-      ok = true;
-    } catch (const YAML::InvalidScalar& e) {
-      string reason = "unable to convert to string.";
-      gen_error(YAVL_Exception(reason, gr_path, doc_path));
-      ok = false;
-    }
+    attempt_to_convert<string>(doc, ok);
   } else if (type == "uint64") {
-    try {
-      unsigned long long tmp;
-      doc >> tmp;
-      ok = true;
-    } catch (const YAML::InvalidScalar& e) {
-      string tmp = doc;
-      string reason = "unable to convert " + tmp + " to long long.";
-      gen_error(YAVL_Exception(reason, gr_path, doc_path));
-      ok = false;
-    }
+    attempt_to_convert<unsigned long long>(doc, ok);
   } else if (type == "enum") {
     ok = false;
     string docValue = doc;
@@ -141,17 +140,17 @@ bool YAVL::validate_leaf(const YAML::Node &gr, const YAML::Node &doc)
     }
     if (!ok) {
       string reason = "enum string " + docValue + " is not allowed.";
-      gen_error(YAVL_Exception(reason, gr_path, doc_path));
+      gen_error(Exception(reason, gr_path, doc_path));
     }
   }
   return ok;
 }
 
-bool YAVL::validate_list(const YAML::Node &gr, const YAML::Node &doc)
+bool Validator::validate_list(const YAML::Node &gr, const YAML::Node &doc)
 {
   if (doc.GetType() != YAML::CT_SEQUENCE) {
     string reason = "expected list, but found " + type2str(doc.GetType());
-    gen_error(YAVL_Exception(reason, gr_path, doc_path));
+    gen_error(Exception(reason, gr_path, doc_path));
     return false;
   }
 
@@ -168,7 +167,7 @@ bool YAVL::validate_list(const YAML::Node &gr, const YAML::Node &doc)
   return ok;
 }
 
-bool YAVL::validate_doc(const YAML::Node &gr, const YAML::Node &doc)
+bool Validator::validate_doc(const YAML::Node &gr, const YAML::Node &doc)
 {
   bool ok = true;
   const YAML::Node *mapNode = 0;
