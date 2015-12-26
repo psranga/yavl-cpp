@@ -1,28 +1,23 @@
 ==Summary==
 
-YAVL-CPP is a C++ library to help validate YAML files
-against a user-provided specification.
+YAVL-CPP is a C++ library check if a given YAML file follows an
+expected schema. For example, you can use this to check if a
+configuration file has the tree structure that your program
+expects to have.
 
-The specification file is also written in YAML.
+This library checks if the input YAML has the tree structure
+(i.e., keys, values, types, nesting of keys) that the
+specification expects. See example below.
 
-I hesitate to say that this tool checks an input
-YAML against a "grammar". I do not think the specification
-format I've defined is general enough to be called a
-"grammar".
+To be clear, this is not a tool to check if the input file is a
+valid YAML; any YAML parser will do that.
 
-Maybe I should call it a "tree specification" (treespec).
+The tree specification file is also written in YAML.
 
-Note: this is not a tool to check if the input file is a valid
-YAML; any YAML parser will do that. This library can be
-used to check if the input YAML has the tree structure
-(i.e., keys, values, types, nesting of keys) that your
-application expects. See example below.
-
-The idea is that generation of error messages about
-what is wrong with a YAML file can be automated through
-this library, so that your processing functions can be
-written assuming that the tree generated from the YAML
-file conforms to your code's assumptions.
+This library saves you the hassle of writing code to emit error
+messages about what is wrong about the input file. Your code
+can be written assuming that it only ever works with input
+that conforms to an expected schema.
 
 Structures such as lists of lists, maps of lists,
 lists etc can be nicely checked. :)
