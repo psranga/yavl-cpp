@@ -1,7 +1,7 @@
 #ifndef _YAVL_H_
 #define _YAVL_H_
 
-#include "yaml.h"
+#include "yaml-cpp/yaml.h"
 #include <vector>
 #include <string>
 #include <ostream>
@@ -40,7 +40,7 @@ namespace YAVL
     Errors errors;
 
     int num_keys(const YAML::Node& doc);
-    const std::string& type2str(YAML::CONTENT_TYPE t);
+    const std::string& type2str(YAML::NodeType::value t);
     bool validate_map(const YAML::Node &mapNode, const YAML::Node &doc);
     bool validate_leaf(const YAML::Node &gr, const YAML::Node &doc);
     bool validate_list(const YAML::Node &gr, const YAML::Node &doc);
@@ -51,13 +51,17 @@ namespace YAVL
     }
 
     template<typename T>
-    void attempt_to_convert(const YAML::Node& scalar_node, bool& ok) {
+    void attempt_to_convert(const YAML::Node &scalar_node, bool &ok) {
       try {
-        T tmp;
-        scalar_node >> tmp;
+        T tmp = scalar_node.as<T>();
         ok = true;
-      } catch (const YAML::InvalidScalar& e) {
-        std::string s = scalar_node;
+      } catch (const YAML::InvalidScalar &e) {
+        std::string s = scalar_node.as<std::string>();
+        std::string reason = "unable to convert '" + s + "' to '" + YAVL::ctype2str<T>() + "'.";
+        gen_error(Exception(reason, gr_path, doc_path));
+        ok = false;
+      } catch (const YAML::BadConversion &e) {
+        std::string s = scalar_node.as<std::string>();
         std::string reason = "unable to convert '" + s + "' to '" + YAVL::ctype2str<T>() + "'.";
         gen_error(Exception(reason, gr_path, doc_path));
         ok = false;
