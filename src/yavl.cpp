@@ -119,7 +119,7 @@ bool Validator::validate_map(const YAML::Node &mapNode, const YAML::Node &doc)
     string key = i->first.as<string>();
     const YAML::Node &valueNode = i->second;
     YAML::Node docMapNode;
-    if (!(docMapNode = doc[key])) {
+    if (!(doc[key] && (docMapNode = doc[key]))) {
       string reason = "key: " + key + " not found.";
       gen_error(Exception(reason, gr_path, doc_path));
       ok = false;
