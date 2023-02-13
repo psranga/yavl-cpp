@@ -83,6 +83,24 @@ point implementation and documentaion.
 
 ==Compilation==
 
+Using cmake and conan:
+
+$ cmake -S . -B build/debug -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=.
+$ cmake --build build/debug
+
+To install:
+$ cmake --build build/debug -- install
+$ tree dist/
+dist/
+├── bin
+│   └── checker
+└── lib
+    └── libyavl_cpp.a
+
+2 directories, 2 files
+
+OR,
+
 Nothing fancy. Just compile in yavl.cpp and all the cpp files of
 yaml-cpp with your program. I believe that libraries should pollute
 your build process as little as possible (thankfully, so does
